@@ -34,3 +34,4 @@ resetEmpty().catch((err) => {
   closeDb();
   process.exit(1);
 });
+

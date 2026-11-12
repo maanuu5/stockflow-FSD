@@ -173,7 +173,21 @@ npm test
 
 ---
 
-## 9. Screenshots
+## 9. Deploying on Vercel
+
+This repository is pre-configured for one-click deployment on **Vercel** (`vercel.json` + `api/index.js`):
+
+1. Import `https://github.com/maanuu5/stockflow-FSD` in the Vercel dashboard (keep **Root Directory** as `.`).
+2. Add an environment variable in Vercel Project Settings:
+   - `JWT_SECRET` = `<any strong random string>`
+3. Click **Deploy**.
+   - Frontend (`client/dist`) is served as static assets with SPA rewrites.
+   - Backend Express API routes (`/api/*`) run through the Vercel Serverless Function at `api/index.js`.
+   - On Vercel, SQLite automatically uses `/tmp/stockflow.db` and seeds the demo admin account (`admin@stockflow.com` / `Admin@123`) on cold start with 0 initial products/categories so first-time users can test the guided onboarding flow. *(Note: `/tmp` in Vercel serverless is ephemeral across cold starts; for permanent cloud storage, deploy the Node server to a host with persistent disk or swap SQLite for a managed database.)*
+
+---
+
+## 10. Screenshots
 
 *(Run `npm run dev` and capture screenshots of the following screens for your project report submission)*:
 - **Dashboard Overview** — KPIs, 14-day movement bar chart, category donut chart, and low-stock alerts

@@ -1,4 +1,5 @@
 import Database from 'better-sqlite3';
+import bcrypt from 'bcrypt';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -46,6 +47,20 @@ export function initializeSchema(db = getDb()) {
 }
 
 /**
+ * Ensures the default demo admin account exists when starting with a fresh database
+ * (including ephemeral cold starts on Vercel) without adding any preset products.
+ */
+export function ensureDemoAdmin(db = getDb()) {
+  const userCount = db.prepare('SELECT COUNT(*) AS count FROM users').get().count;
+  if (userCount === 0) {
+    const hash = bcrypt.hashSync('Admin@123', 10);
+    db.prepare(
+      'INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)'
+    ).run('Admin', 'admin@stockflow.com', hash, 'admin');
+  }
+}
+
+/**
  * Closes the cached database instance (useful for clean shutdown and tests).
  */
 export function closeDb() {
@@ -56,4 +71,3 @@ export function closeDb() {
 }
 
 export default getDb;
-

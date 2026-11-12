@@ -129,14 +129,34 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-4 border-t border-neutral-100 pt-4 dark:border-neutral-900">
-            <button
-              type="button"
-              onClick={fillDemoCredentials}
-              className="w-full rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
-            >
-              Fill Demo Admin Credentials
-            </button>
+          {/* Visible Demo Admin Credentials Box */}
+          <div className="mt-5 rounded-lg border border-neutral-200 bg-neutral-50 p-3.5 dark:border-neutral-800 dark:bg-neutral-900/60">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                Demo Admin Account
+              </span>
+              <button
+                type="button"
+                onClick={fillDemoCredentials}
+                className="rounded-md border border-neutral-200 bg-white px-2.5 py-1 text-[11px] font-medium text-neutral-900 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:bg-black dark:text-white dark:hover:bg-neutral-800"
+              >
+                Auto-fill
+              </button>
+            </div>
+            <div className="mt-2 space-y-1 text-xs text-neutral-700 dark:text-neutral-300">
+              <p>
+                <span className="text-neutral-500 dark:text-neutral-400">Email:</span>{' '}
+                <code className="font-mono font-medium text-neutral-950 dark:text-white">
+                  admin@stockflow.com
+                </code>
+              </p>
+              <p>
+                <span className="text-neutral-500 dark:text-neutral-400">Password:</span>{' '}
+                <code className="font-mono font-medium text-neutral-950 dark:text-white">
+                  Admin@123
+                </code>
+              </p>
+            </div>
           </div>
         </div>
 
