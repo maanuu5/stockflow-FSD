@@ -96,12 +96,12 @@ DB_PATH=./database/stockflow.db
 CLIENT_URL=http://localhost:5173
 ```
 
-### 3. Initialize and Seed the Database
-Create the SQLite schema and load the sample dataset (1 admin account, 6 categories, 22 products, 18 transactions):
+### 3. Initialize the Database
+Start with a **fresh 0-value workspace** (recommended for first-time guided onboarding; includes the demo admin account and 0 products/categories/transactions):
 ```bash
-npm run db:reset
+npm run db:empty
 ```
-*(Or run `npm run db:init` followed by `npm run db:seed`.)*
+*(Or, if you want to load sample demo products and transactions right away, run `npm run db:reset`.)*
 
 ### 4. Start the Application
 Run both the Express API (`http://localhost:5000`) and Vite frontend (`http://localhost:5173`) concurrently:

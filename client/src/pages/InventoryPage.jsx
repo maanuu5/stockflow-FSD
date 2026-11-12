@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { ArrowDownLeft, ArrowUpRight, Search, Boxes } from 'lucide-react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { ArrowDownLeft, ArrowUpRight, Search, Boxes, ArrowRight } from 'lucide-react';
 import api, { getErrorMessage } from '../services/api';
 import { useToast } from '../context/ToastContext';
 import { useDebounce } from '../hooks/useDebounce';
@@ -161,6 +161,26 @@ export default function InventoryPage() {
           </button>
         </div>
       </div>
+
+      {!loading && items.length === 0 && status === 'all' && !search && categoryId === 'all' && (
+        <div className="flex flex-col gap-3 rounded-xl border border-neutral-950 bg-white p-4 sm:flex-row sm:items-center sm:justify-between dark:border-white dark:bg-neutral-950">
+          <div>
+            <p className="text-xs font-semibold text-neutral-950 dark:text-white">
+              No products to manage yet
+            </p>
+            <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
+              Add at least one product first, then come back here to add or remove stock.
+            </p>
+          </div>
+          <Link
+            to="/products"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-black px-3.5 py-2 text-xs font-medium text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
+          >
+            Go to Products
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      )}
 
       {/* Quick Filter Pills + Search */}
       <div className="flex flex-col gap-3 rounded-xl border border-neutral-200 bg-white p-3.5 sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800 dark:bg-neutral-950">

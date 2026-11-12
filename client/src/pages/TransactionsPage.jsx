@@ -179,8 +179,12 @@ export default function TransactionsPage() {
       ) : transactions.length === 0 ? (
         <EmptyState
           icon={ArrowLeftRight}
-          title="No transactions found"
-          description="No stock movements match these filters."
+          title="No stock movements yet"
+          description={
+            hasFilters
+              ? 'No stock movements match these filters.'
+              : 'Whenever you add a product or update stock (IN / OUT) on the Inventory page, a record appears here automatically.'
+          }
           action={
             hasFilters && (
               <button

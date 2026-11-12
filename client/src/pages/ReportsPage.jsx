@@ -43,6 +43,10 @@ export default function ReportsPage() {
   const [txReport, setTxReport] = useState({ items: [], summary: null });
 
   useEffect(() => {
+    localStorage.setItem('stockflow_visited_reports', 'true');
+  }, []);
+
+  useEffect(() => {
     async function loadCategories() {
       try {
         const res = await api.get('/categories');

@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Plus, Search, Pencil, Trash2, FolderTree } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Plus, Search, Pencil, Trash2, FolderTree, ArrowRight } from 'lucide-react';
 import api, { getErrorMessage } from '../services/api';
 import { useToast } from '../context/ToastContext';
 import { useDebounce } from '../hooks/useDebounce';
@@ -148,6 +149,41 @@ export default function CategoriesPage() {
           Add Category
         </button>
       </div>
+
+      {categories.length === 0 && !loading && (
+        <div className="flex flex-col gap-3 rounded-xl border border-neutral-950 bg-white p-4 sm:flex-row sm:items-center sm:justify-between dark:border-white dark:bg-neutral-950">
+          <div>
+            <p className="text-xs font-semibold text-neutral-950 dark:text-white">
+              Step 1: Create your first category
+            </p>
+            <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
+              Categories help you organize products (for example: Electronics, Stationery, Furniture).
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={openCreate}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-black px-3.5 py-2 text-xs font-medium text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Create First Category
+          </button>
+        </div>
+      )}
+
+      {categories.length > 0 && (
+        <div className="flex items-center justify-between rounded-xl border border-neutral-200 bg-white px-4 py-3 text-xs dark:border-neutral-800 dark:bg-neutral-950">
+          <span className="text-neutral-600 dark:text-neutral-400">
+            Ready for the next step? Add products inside your categories.
+          </span>
+          <Link
+            to="/products"
+            className="inline-flex items-center gap-1 font-medium text-neutral-950 hover:underline dark:text-white"
+          >
+            Go to Products <ArrowRight className="h-3 w-3" />
+          </Link>
+        </div>
+      )}
 
       <div className="rounded-xl border border-neutral-200 bg-white p-3.5 dark:border-neutral-800 dark:bg-neutral-950">
         <div className="relative max-w-sm">

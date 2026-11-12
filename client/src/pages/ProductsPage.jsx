@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import {
   Plus,
   Search,
@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Eye,
+  ArrowRight,
 } from 'lucide-react';
 import api, { getErrorMessage } from '../services/api';
 import { useToast } from '../context/ToastContext';
@@ -266,6 +267,48 @@ export default function ProductsPage() {
           Add Product
         </button>
       </div>
+
+      {/* Guided Empty State Banner */}
+      {!loading && categories.length === 0 && (
+        <div className="flex flex-col gap-3 rounded-xl border border-neutral-950 bg-white p-4 sm:flex-row sm:items-center sm:justify-between dark:border-white dark:bg-neutral-950">
+          <div>
+            <p className="text-xs font-semibold text-neutral-950 dark:text-white">
+              First, create a category
+            </p>
+            <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
+              Every product belongs to a category. Create your first category before adding products.
+            </p>
+          </div>
+          <Link
+            to="/categories"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-black px-3.5 py-2 text-xs font-medium text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
+          >
+            Create Category
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      )}
+
+      {!loading && categories.length > 0 && products.length === 0 && !search && categoryId === 'all' && stockStatus === 'all' && (
+        <div className="flex flex-col gap-3 rounded-xl border border-neutral-950 bg-white p-4 sm:flex-row sm:items-center sm:justify-between dark:border-white dark:bg-neutral-950">
+          <div>
+            <p className="text-xs font-semibold text-neutral-950 dark:text-white">
+              Step 2: Add your first product
+            </p>
+            <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
+              Enter a product name, unique SKU code, cost & selling price in ₹, and starting quantity.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={openCreateModal}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-black px-3.5 py-2 text-xs font-medium text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Add First Product
+          </button>
+        </div>
+      )}
 
       {/* Filters Toolbar */}
       <div className="flex flex-col gap-3 rounded-xl border border-neutral-200 bg-white p-3.5 sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800 dark:bg-neutral-950">

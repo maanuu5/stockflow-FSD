@@ -7,6 +7,7 @@
     "install:all": "npm --prefix server install && npm --prefix client install",
     "db:init": "npm --prefix server run db:init",
     "db:seed": "npm --prefix server run db:seed",
+    "db:empty": "npm --prefix server run db:empty",
     "db:reset": "npm --prefix server run db:reset",
     "dev": "concurrently -n API,WEB -c blue,green \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
     "dev:server": "npm --prefix server run dev",

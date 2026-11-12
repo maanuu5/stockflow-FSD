@@ -6,6 +6,7 @@ import {
   BarChart3,
   ArrowUpRight,
   ArrowDownRight,
+  HelpCircle,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -23,6 +24,7 @@ import { useTheme } from '../context/ThemeContext';
 import { useToast } from '../context/ToastContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import StatusBadge from '../components/StatusBadge';
+import GettingStartedGuide from '../components/GettingStartedGuide';
 import { formatCurrency, formatDateTime, formatNumber } from '../utils/formatters';
 
 function MetricCard({ label, value, hint, to }) {
@@ -52,6 +54,9 @@ export default function DashboardPage() {
     stockByCategory: [],
     movementSeries: [],
   });
+  const [guideDismissed, setGuideDismissed] = useState(
+    () => localStorage.getItem('stockflow_hide_guide') === 'true'
+  );
 
   const fetchDashboard = useCallback(async () => {
     setLoading(true);
@@ -77,6 +82,16 @@ export default function DashboardPage() {
     fetchDashboard();
   }, [fetchDashboard]);
 
+  const handleDismissGuide = () => {
+    localStorage.setItem('stockflow_hide_guide', 'true');
+    setGuideDismissed(true);
+  };
+
+  const handleShowGuide = () => {
+    localStorage.removeItem('stockflow_hide_guide');
+    setGuideDismissed(false);
+  };
+
   if (loading) {
     return <LoadingSpinner size="lg" label="Loading overview..." />;
   }
@@ -84,21 +99,33 @@ export default function DashboardPage() {
   const isDark = theme === 'dark';
   const attentionCount = (stats?.lowStockCount || 0) + (stats?.outOfStockCount || 0);
   const firstName = (user?.name || 'there').split(' ')[0];
+  const isFreshWorkspace = (stats?.totalProducts || 0) === 0 && (stats?.totalCategories || 0) === 0;
+  const showGuide = !guideDismissed || isFreshWorkspace;
 
   return (
-    <div className="space-y-8">
-      {/* Simple Header & Quick Actions for First-Time Users */}
+    <div className="space-y-6">
+      {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold tracking-tight text-neutral-950 dark:text-white">
-            Welcome back, {firstName}
+            Welcome, {firstName}
           </h1>
           <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-            Here is a quick snapshot of your stock, value, and items that need restocking.
+            Track your products, stock levels, and inventory value in ₹ from one place.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {guideDismissed && !isFreshWorkspace && (
+            <button
+              type="button"
+              onClick={handleShowGuide}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300 dark:hover:bg-neutral-900"
+            >
+              <HelpCircle className="h-3.5 w-3.5" />
+              Show Guide
+            </button>
+          )}
           <Link
             to="/products"
             className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-xs font-medium text-neutral-900 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-100 dark:hover:bg-neutral-900"
@@ -123,7 +150,12 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 4 Clean Key Metrics */}
+      {/* Step-by-Step Interactive Onboarding Guide */}
+      {showGuide && (
+        <GettingStartedGuide stats={stats} onDismiss={handleDismissGuide} />
+      )}
+
+      {/* 4 Clean Key Metrics (starts at 0) */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard
           label="Total Products"
@@ -151,7 +183,7 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* Charts: Minimal Monochrome */}
+      {/* Charts */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         <div className="rounded-xl border border-neutral-200 bg-white p-5 lg:col-span-3 dark:border-neutral-800 dark:bg-neutral-950">
           <div className="mb-4 flex items-center justify-between">
@@ -229,7 +261,7 @@ export default function DashboardPage() {
                 Units by Category
               </h2>
               <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                Where your stock sits today
+                Breakdown across your categories
               </p>
             </div>
             <Link
@@ -241,8 +273,16 @@ export default function DashboardPage() {
           </div>
 
           {chartData.stockByCategory.length === 0 ? (
-            <div className="flex h-56 items-center justify-center text-xs text-neutral-400">
-              No categories yet.
+            <div className="flex h-52 flex-col items-center justify-center text-center">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                No categories created yet.
+              </p>
+              <Link
+                to="/categories?guide=1"
+                className="mt-2.5 rounded-md border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-900 hover:bg-neutral-50 dark:border-neutral-800 dark:text-white dark:hover:bg-neutral-900"
+              >
+                Create First Category
+              </Link>
             </div>
           ) : (
             <div className="space-y-3.5 pt-1">
@@ -278,7 +318,6 @@ export default function DashboardPage() {
 
       {/* Recent Activity & Restock Alerts */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Recent Activity */}
         <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
           <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-3.5 dark:border-neutral-800">
             <h2 className="text-sm font-medium text-neutral-950 dark:text-white">
@@ -295,7 +334,7 @@ export default function DashboardPage() {
           <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
             {recentTransactions.length === 0 ? (
               <div className="px-5 py-8 text-center text-xs text-neutral-500">
-                No movements yet. Add or remove stock to see activity here.
+                No stock movements yet. Every Stock IN or OUT you record will appear here.
               </div>
             ) : (
               recentTransactions.map((tx) => (
@@ -335,7 +374,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Low Stock Alerts */}
         <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
           <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-3.5 dark:border-neutral-800">
             <h2 className="text-sm font-medium text-neutral-950 dark:text-white">
@@ -352,7 +390,7 @@ export default function DashboardPage() {
           <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
             {lowStockAlerts.length === 0 ? (
               <div className="px-5 py-8 text-center text-xs text-neutral-500">
-                Everything is well stocked right now.
+                No low-stock alerts yet. Products below their minimum stock threshold show up here.
               </div>
             ) : (
               lowStockAlerts.slice(0, 6).map((item) => (
