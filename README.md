@@ -173,16 +173,19 @@ npm test
 
 ---
 
-## 9. Deploying on Vercel
+## 9. Deploying on Vercel (Services Mode)
 
-This repository is pre-configured for one-click deployment on **Vercel** (`vercel.json` + `api/index.js`):
+This repository is configured to deploy on **Vercel** using **Vercel Services** (`vercel.json`):
+
+- **`client`** (`root: "client"`, `framework: "vite"`) — Public React/Vite SPA served on `/(.*)` with SPA fallback in `client/vercel.json`.
+- **`server`** (`root: "server"`, `framework: "express"`, `entrypoint: "server.js"`) — Public Express API service routed from `/api/(.*)`.
 
 1. Import `https://github.com/maanuu5/stockflow-FSD` in the Vercel dashboard (keep **Root Directory** as `.`).
 2. Add an environment variable in Vercel Project Settings:
    - `JWT_SECRET` = `<any strong random string>`
-3. Click **Deploy**.
-   - Frontend (`client/dist`) is served as static assets with SPA rewrites.
-   - Backend Express API routes (`/api/*`) run through the Vercel Serverless Function at `api/index.js`.
+3. Click **Deploy** (or run `vercel dev` locally with the Vercel CLI to run all services together).
+   - Frontend (`client/dist`) is served as static assets with client-side SPA routing.
+   - Backend Express API routes (`/api/*`) run through the `server` service (`server/server.js`).
    - On Vercel, SQLite automatically uses `/tmp/stockflow.db` and seeds the demo admin account (`admin@stockflow.com` / `Admin@123`) on cold start with 0 initial products/categories so first-time users can test the guided onboarding flow. *(Note: `/tmp` in Vercel serverless is ephemeral across cold starts; for permanent cloud storage, deploy the Node server to a host with persistent disk or swap SQLite for a managed database.)*
 
 ---

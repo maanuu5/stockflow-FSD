@@ -4,18 +4,23 @@ import { createApp } from './app.js';
 
 const app = createApp();
 
-const server = app.listen(env.port, () => {
-  console.log(`StockFlow API server running at http://localhost:${env.port}`);
-});
+// Export Express app instance for Vercel Services serverless runtime
+export default app;
 
-function shutdown() {
-  console.log('\nShutting down StockFlow server...');
-  server.close(() => {
-    closeDb();
-    process.exit(0);
+// Only bind a local TCP port when running outside Vercel's managed runtime
+if (!env.isVercel) {
+  const server = app.listen(env.port, () => {
+    console.log(`StockFlow API server running at http://localhost:${env.port}`);
   });
+
+  function shutdown() {
+    console.log('\nShutting down StockFlow server...');
+    server.close(() => {
+      closeDb();
+      process.exit(0);
+    });
+  }
+
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
 }
-
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
-

@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -11,7 +12,7 @@ dotenv.config({ path: path.join(serverRoot, '.env') });
 const isVercel = Boolean(process.env.VERCEL);
 
 const defaultDbPath = isVercel
-  ? '/tmp/stockflow.db'
+  ? path.join(os.tmpdir(), 'stockflow.db')
   : path.join(serverRoot, 'database', 'stockflow.db');
 
 const env = {
